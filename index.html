@@ -1,0 +1,850 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bishr KV — Graphic Designer</title>
+<link rel="icon" type="image/png" href="https://i.postimg.cc/KYr0ftrL/649228621-18059418974390231-5251174486841858004-n-photoaidcom-cropped.png">
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+tailwind.config={theme:{extend:{colors:{blue:{50:'#eff6ff',100:'#dbeafe',200:'#bfdbfe',300:'#93c5fd',400:'#60a5fa',500:'#3b82f6',600:'#2563eb',700:'#1d4ed8',800:'#1e40af',900:'#1e3a8a',950:'#172554'}},fontFamily:{sans:['Inter','sans-serif'],display:['Space Grotesk','sans-serif']}}}}
+</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:#fff;color:#1e3a8a;overflow-x:hidden;padding-bottom:80px}
+.grid-bg{background-image:linear-gradient(rgba(59,130,246,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,0.06) 1px,transparent 1px);background-size:60px 60px}
+.grid-bg-dense{background-image:linear-gradient(rgba(59,130,246,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,0.1) 1px,transparent 1px);background-size:30px 30px}
+.reveal{opacity:0;transform:translateY(60px);transition:all .9s cubic-bezier(.16,1,.3,1)}
+.reveal.active{opacity:1;transform:translateY(0)}
+.reveal-left{opacity:0;transform:translateX(-80px);transition:all .9s cubic-bezier(.16,1,.3,1)}
+.reveal-left.active{opacity:1;transform:translateX(0)}
+.reveal-right{opacity:0;transform:translateX(80px);transition:all .9s cubic-bezier(.16,1,.3,1)}
+.reveal-right.active{opacity:1;transform:translateX(0)}
+.delay-1{transition-delay:.1s}.delay-2{transition-delay:.2s}.delay-3{transition-delay:.3s}.delay-4{transition-delay:.4s}.delay-5{transition-delay:.5s}
+
+/* ===== HERO TEXT ANIMATIONS ===== */
+.hero-line{overflow:hidden;display:block}
+
+/* Letter-by-letter span */
+.hero-line .char{
+  display:inline-block;
+  opacity:0;
+  transform:translateY(100%) rotateX(-80deg);
+  animation:charReveal 0.9s cubic-bezier(0.16,1,0.3,1) forwards;
+  transform-origin:bottom center;
+}
+@keyframes charReveal{
+  0%{opacity:0;transform:translateY(100%) rotateX(-80deg) scale(0.6)}
+  60%{opacity:1;transform:translateY(-5%) rotateX(5deg) scale(1.02)}
+  100%{opacity:1;transform:translateY(0) rotateX(0) scale(1)}
+}
+
+/* Gradient line */
+.hero-line .gradient-char{
+  display:inline-block;
+  opacity:0;
+  transform:translateY(100%) rotateX(-80deg);
+  animation:gradientCharReveal 0.9s cubic-bezier(0.16,1,0.3,1) forwards;
+  transform-origin:bottom center;
+  background:linear-gradient(135deg,#2563eb,#60a5fa,#a78bfa,#60a5fa);
+  background-size:300% 300%;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:gradientCharReveal 0.9s cubic-bezier(0.16,1,0.3,1) forwards,gradientShift 4s ease-in-out 1.5s infinite;
+}
+@keyframes gradientCharReveal{
+  0%{opacity:0;transform:translateY(100%) rotateX(-80deg) scale(0.6)}
+  60%{opacity:1;transform:translateY(-5%) rotateX(5deg) scale(1.02)}
+  100%{opacity:1;transform:translateY(0) rotateX(0) scale(1)}
+}
+@keyframes gradientShift{
+  0%,100%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+}
+
+/* Ampersand special animation */
+.hero-line .ampersand{
+  display:inline-block;
+  opacity:0;
+  transform:translateY(100%) rotate(-20deg) scale(0.3);
+  animation:ampReveal 1s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+@keyframes ampReveal{
+  0%{opacity:0;transform:translateY(100%) rotate(-20deg) scale(0.3)}
+  70%{opacity:1;transform:translateY(-8%) rotate(3deg) scale(1.05)}
+  100%{opacity:1;transform:translateY(0) rotate(0) scale(1)}
+}
+
+/* Space character */
+.hero-line .space{display:inline-block;width:0.3em}
+
+/* Floating hover on hero text */
+.hero-text-container{perspective:1000px}
+.hero-line-wrapper{
+  transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);
+  transform-style:preserve-3d;
+  cursor:default;
+}
+.hero-line-wrapper:hover{
+  transform:rotateX(2deg) rotateY(-2deg) translateZ(10px);
+}
+.hero-line-wrapper:hover .char,
+.hero-line-wrapper:hover .gradient-char,
+.hero-line-wrapper:hover .ampersand{
+  text-shadow:0 20px 40px rgba(37,99,235,0.15);
+}
+
+/* Cursor blink on last line */
+.hero-cursor{
+  display:inline-block;
+  width:4px;
+  height:0.85em;
+  background:#2563eb;
+  border-radius:2px;
+  margin-left:8px;
+  vertical-align:middle;
+  opacity:0;
+  animation:cursorAppear 0.3s ease 2.2s forwards,cursorBlink 0.8s step-end 2.5s infinite;
+}
+@keyframes cursorAppear{to{opacity:1}}
+@keyframes cursorBlink{0%,100%{opacity:1}50%{opacity:0}}
+
+@keyframes float{0%,100%{transform:translateY(0) rotate(0)}33%{transform:translateY(-10px) rotate(1deg)}66%{transform:translateY(5px) rotate(-1deg)}}
+.float{animation:float 6s ease-in-out infinite}.float-delay{animation:float 6s ease-in-out 2s infinite}.float-delay-2{animation:float 6s ease-in-out 4s infinite}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.marquee-track{animation:marquee 25s linear infinite}
+.marquee-track:hover{animation-play-state:paused}
+.cursor-blob{width:30px;height:30px;background:radial-gradient(circle,rgba(59,130,246,0.4),transparent 70%);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;transition:transform .15s ease-out,width .3s,height .3s;transform:translate(-50%,-50%)}
+.cursor-blob.hovering{width:60px;height:60px;background:radial-gradient(circle,rgba(59,130,246,0.2),transparent 70%)}
+.bottom-nav{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:1000;background:rgba(255,255,255,0.6);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(59,130,246,0.15);border-radius:9999px;padding:8px 12px;display:flex;align-items:center;gap:4px;box-shadow:0 8px 32px rgba(59,130,246,0.12),0 2px 8px rgba(0,0,0,0.05);transition:all .4s cubic-bezier(.16,1,.3,1)}
+.bottom-nav.scrolled{box-shadow:0 8px 40px rgba(59,130,246,0.18),0 2px 8px rgba(0,0,0,0.08)}
+.nav-item{display:flex;align-items:center;gap:6px;padding:10px 18px;border-radius:9999px;font-size:13px;font-weight:500;color:#64748b;cursor:pointer;transition:all .3s cubic-bezier(.16,1,.3,1);text-decoration:none;white-space:nowrap}
+.nav-item:hover{color:#2563eb;background:rgba(59,130,246,0.08)}
+.nav-item.active{color:#fff;background:#2563eb;box-shadow:0 4px 15px rgba(37,99,235,0.35)}
+
+/* Natural-size project cards */
+.project-card{position:relative;overflow:hidden;border-radius:20px;cursor:pointer}
+.project-card .overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(30,58,138,0.9) 0%,rgba(30,58,138,0.3) 50%,transparent 100%);opacity:0;transition:opacity .5s ease;display:flex;flex-direction:column;justify-content:flex-end;padding:28px}
+.project-card:hover .overlay{opacity:1}
+.project-card img{display:block;width:100%;height:auto;object-fit:cover;transition:transform .7s cubic-bezier(.16,1,.3,1)}
+.project-card:hover img{transform:scale(1.05)}
+
+.skill-fill{width:0;transition:width 1.5s cubic-bezier(.16,1,.3,1)}
+.counter{font-variant-numeric:tabular-nums}
+.text-gradient{background:linear-gradient(135deg,#2563eb,#60a5fa,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.img-reveal{position:relative;overflow:hidden}
+.img-reveal::after{content:'';position:absolute;inset:0;background:#fff;transform:scaleX(1);transform-origin:right;transition:transform 1s cubic-bezier(.16,1,.3,1)}
+.img-reveal.active::after{transform:scaleX(0);transform-origin:left}
+.testimonial-card{transition:transform .5s cubic-bezier(.16,1,.3,1),box-shadow .5s ease}
+.testimonial-card:hover{transform:translateY(-8px);box-shadow:0 20px 60px rgba(59,130,246,0.12)}
+.loading-screen{position:fixed;inset:0;background:#fff;z-index:9998;display:flex;align-items:center;justify-content:center;transition:opacity .6s ease,visibility .6s ease}
+.loading-screen.hidden{opacity:0;visibility:hidden}
+.loading-bar{width:200px;height:3px;background:#dbeafe;border-radius:999px;overflow:hidden}
+.loading-bar-fill{height:100%;background:#2563eb;border-radius:999px;animation:loadBar 1.5s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes loadBar{0%{width:0}100%{width:100%}}
+.toast{position:fixed;top:30px;right:30px;background:rgba(255,255,255,0.9);backdrop-filter:blur(20px);border:1px solid rgba(59,130,246,0.2);border-radius:16px;padding:16px 24px;z-index:10000;transform:translateX(120%);transition:transform .5s cubic-bezier(.16,1,.3,1);box-shadow:0 10px 40px rgba(59,130,246,0.15)}
+.toast.show{transform:translateX(0)}
+.parallax{will-change:transform}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:#f1f5f9}::-webkit-scrollbar-thumb{background:#93c5fd;border-radius:999px}::-webkit-scrollbar-thumb:hover{background:#3b82f6}
+.modal-overlay{position:fixed;inset:0;background:rgba(30,58,138,0.3);backdrop-filter:blur(8px);z-index:5000;display:none;align-items:center;justify-content:center;opacity:0;transition:opacity .3s ease}
+.modal-overlay.open{display:flex;opacity:1}
+.modal-content{background:#fff;border-radius:24px;max-width:1100px;width:95%;max-height:90vh;overflow-y:auto;box-shadow:0 25px 80px rgba(30,58,138,0.25);border:1px solid rgba(59,130,246,0.1);transform:scale(0.95);transition:transform .3s cubic-bezier(.16,1,.3,1)}
+.modal-overlay.open .modal-content{transform:scale(1)}
+.admin-work-item{transition:all .3s ease}
+.admin-work-item:hover{background:#f0f7ff}
+.toggle-switch{width:44px;height:24px;background:#cbd5e1;border-radius:999px;position:relative;cursor:pointer;transition:background .3s;flex-shrink:0}
+.toggle-switch.on{background:#2563eb}
+.toggle-switch::after{content:'';width:20px;height:20px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px;transition:transform .3s;box-shadow:0 1px 3px rgba(0,0,0,0.15)}
+.toggle-switch.on::after{transform:translateX(20px)}
+.admin-input{width:100%;padding:10px 14px;border-radius:12px;border:1px solid #dbeafe;background:#f8fbff;font-size:14px;color:#1e3a8a;outline:none;transition:border .2s}
+.admin-input:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,0.1)}
+.admin-btn{padding:10px 20px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;border:none}
+.admin-btn-primary{background:#2563eb;color:#fff}.admin-btn-primary:hover{background:#1d4ed8}
+.admin-btn-danger{background:#fee2e2;color:#dc2626}.admin-btn-danger:hover{background:#fecaca}
+.admin-btn-ghost{background:transparent;color:#64748b;border:1px solid #e2e8f0}.admin-btn-ghost:hover{background:#f1f5f9}
+.all-works-page{display:none;min-height:100vh;padding-top:40px}
+.all-works-page.visible{display:block}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.shake{animation:shake .4s ease}
+.featured-badge{position:absolute;top:12px;right:12px;background:#2563eb;color:#fff;font-size:10px;font-weight:700;padding:4px 10px;border-radius:999px;letter-spacing:.05em;text-transform:uppercase;z-index:5}
+
+/* Masonry-like layout for natural image sizes */
+.works-masonry{columns:3;column-gap:20px}
+@media(max-width:1024px){.works-masonry{columns:2}}
+@media(max-width:640px){.works-masonry{columns:1}}
+.works-masonry .project-card{break-inside:avoid;margin-bottom:20px;display:block}
+</style>
+</head>
+<body class="grid-bg">
+
+<!-- Loading Screen -->
+<div class="loading-screen" id="loadingScreen">
+  <div class="text-center">
+    <p class="font-display text-2xl font-bold text-blue-600 mb-6">BKV</p>
+    <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+  </div>
+</div>
+
+<!-- Custom Cursor -->
+<div class="cursor-blob" id="cursorBlob"></div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <div class="flex items-center gap-3">
+    <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center"><i data-lucide="check" class="w-4 h-4 text-blue-600"></i></div>
+    <div><p class="text-sm font-semibold text-blue-900" id="toastTitle">Success</p><p class="text-xs text-blue-600" id="toastMsg">Done!</p></div>
+  </div>
+</div>
+
+<!-- ===== MAIN SITE ===== -->
+<div id="mainSite">
+
+<!-- HERO -->
+<section id="home" class="min-h-screen flex items-center justify-center relative px-6 overflow-hidden">
+  <div class="absolute top-20 right-20 w-72 h-72 bg-blue-100 rounded-full blur-3xl opacity-40 float parallax" data-speed="0.03"></div>
+  <div class="absolute bottom-32 left-10 w-96 h-96 bg-blue-50 rounded-full blur-3xl opacity-50 float-delay parallax" data-speed="0.05"></div>
+  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-blue-100 rounded-full opacity-30"></div>
+  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-blue-50 rounded-full opacity-20"></div>
+  <div class="absolute top-32 left-[15%] w-16 h-16 border-2 border-blue-200 rounded-xl rotate-12 float opacity-40"></div>
+  <div class="absolute top-[40%] right-[10%] w-12 h-12 bg-blue-400 rounded-lg rotate-45 float-delay opacity-20"></div>
+  <div class="absolute bottom-32 left-[25%] w-8 h-8 bg-blue-300 rounded-full float-delay-2 opacity-30"></div>
+
+  <div class="text-center relative z-10 max-w-6xl mx-auto hero-text-container">
+    <div class="mb-8">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-100 mb-8" style="opacity:0;animation:fadeInUp 0.8s 0.3s cubic-bezier(.16,1,.3,1) forwards">
+        <span class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
+        <span class="text-sm font-medium text-blue-600">Available for freelance work</span>
+      </div>
+    </div>
+
+    <!-- Creative — line 1 -->
+    <div class="hero-line">
+      <div class="hero-line-wrapper" id="heroLine1">
+        <span class="font-display text-6xl md:text-8xl lg:text-9xl font-bold tracking-tight text-blue-950 leading-[1]" id="heroText1"></span>
+      </div>
+    </div>
+
+    <!-- Designer — line 2 (gradient) -->
+    <div class="hero-line mt-2 md:mt-4">
+      <div class="hero-line-wrapper" id="heroLine2">
+        <span class="font-display text-6xl md:text-8xl lg:text-9xl font-bold tracking-tight leading-[1]" id="heroText2"></span>
+      </div>
+    </div>
+
+    <!-- & Thinker — line 3 -->
+    <div class="hero-line mt-2 md:mt-4">
+      <div class="hero-line-wrapper" id="heroLine3">
+        <span class="font-display text-6xl md:text-8xl lg:text-9xl font-bold tracking-tight text-blue-950 leading-[1]" id="heroText3"></span>
+        <span class="hero-cursor"></span>
+      </div>
+    </div>
+
+    <p class="mt-10 text-lg md:text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed" style="opacity:0;animation:fadeInUp 1s cubic-bezier(.16,1,.3,1) 2s both">I'm Bishr KV — I craft visual identities, brand systems, and digital experiences that resonate and endure.</p>
+
+    <div class="mt-12 flex items-center justify-center gap-4" style="opacity:0;animation:fadeInUp 1s cubic-bezier(.16,1,.3,1) 2.3s both">
+      <a href="#work" class="inline-flex items-center gap-3 px-8 py-4 bg-blue-600 text-white rounded-full font-semibold text-base hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/25">View My Work <i data-lucide="arrow-down-right" class="w-5 h-5"></i></a>
+      <a href="#contact" class="inline-flex items-center gap-3 px-8 py-4 bg-white text-blue-700 rounded-full font-semibold text-base border-2 border-blue-200 hover:border-blue-400 hover:bg-blue-50 transition-all">Let's Talk</a>
+    </div>
+
+    <div class="mt-20 flex flex-col items-center gap-2" style="opacity:0;animation:fadeInUp 1s cubic-bezier(.16,1,.3,1) 2.6s both">
+      <span class="text-xs uppercase tracking-widest text-blue-400 font-medium">Scroll</span>
+      <div class="w-6 h-10 border-2 border-blue-300 rounded-full flex justify-center pt-2"><div class="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="py-5 border-y border-blue-100 overflow-hidden bg-blue-50/50">
+  <div class="flex marquee-track" style="width:max-content">
+    <div class="flex items-center gap-6 px-4">
+      <span class="text-xl md:text-2xl font-display font-semibold text-blue-200 whitespace-nowrap">Brand Identity</span><span class="w-2 h-2 bg-blue-300 rounded-full"></span>
+      <span class="text-xl md:text-2xl font-display font-semibold text-blue-200 whitespace-nowrap">UI/UX Design</span><span class="w-2 h-2 bg-blue-300 rounded-full"></span>
+      <span class="text-xl md:text-2xl font-display font-semibold text-blue-200 whitespace-nowrap">Typography</span><span class="w-2 h-2 bg-blue-300 rounded-full"></span>
+      <span class="text-xl md:text-2xl font-display font-semibold text-blue-200 whitespace-nowrap">Motion Graphics</span><span class="w-2 h-2 bg-blue-300 rounded-full"></span>
+      <span class="text-xl md:text-2xl font-display font-semibold text-blue-200 whitespace-nowrap">Print Design</span><span class="w-2 h-2 bg-blue-300 rounded-full"></span>
+      <span class="text-xl md:text-2xl font-display font-semibold text-blue-200 whitespace-nowrap">Illustration</span><span class="w-2 h-2 bg-blue-300 rounded-full"></span>
+    </div>
+    <div class="flex items-center gap-6 px-4">
+      <span class="text-xl md:text-2xl font-display font-semibold text-blue-200 whitespace-nowrap">Brand Identity</span><span class="w-2 h-2 bg-blue-300 rounded-full"></span>
+      <span class="text-xl md:text-2xl font-display font-semibold text-blue-200 whitespace-nowrap">UI/UX Design</span><span class="w-2 h-2 bg-blue-300 rounded-full"></span>
+      <span class="text-xl md:text-2xl font-display font-semibold text-blue-200 whitespace-nowrap">Typography</span><span class="w-2 h-2 bg-blue-300 rounded-full"></span>
+      <span class="text-xl md:text-2xl font-display font-semibold text-blue-200 whitespace-nowrap">Motion Graphics</span><span class="w-2 h-2 bg-blue-300 rounded-full"></span>
+      <span class="text-xl md:text-2xl font-display font-semibold text-blue-200 whitespace-nowrap">Print Design</span><span class="w-2 h-2 bg-blue-300 rounded-full"></span>
+      <span class="text-xl md:text-2xl font-display font-semibold text-blue-200 whitespace-nowrap">Illustration</span><span class="w-2 h-2 bg-blue-300 rounded-full"></span>
+    </div>
+  </div>
+</div>
+
+<!-- SELECTED WORKS — Masonry -->
+<section id="work" class="py-32 px-6">
+  <div class="max-w-7xl mx-auto">
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between mb-16">
+      <div>
+        <div class="reveal inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 mb-6"><span class="text-xs font-semibold text-blue-600 uppercase tracking-wider">Portfolio</span></div>
+        <h2 class="reveal delay-1 font-display text-4xl md:text-5xl font-bold text-blue-950 tracking-tight">Selected <span class="text-gradient">Works</span></h2>
+      </div>
+      <div class="reveal delay-2 mt-6 md:mt-0">
+        <div class="flex gap-2" id="filterBtns">
+          <button class="filter-btn active px-5 py-2 rounded-full text-sm font-medium bg-blue-600 text-white transition-all" data-filter="all">All</button>
+          <button class="filter-btn px-5 py-2 rounded-full text-sm font-medium bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all" data-filter="branding">Branding</button>
+          <button class="filter-btn px-5 py-2 rounded-full text-sm font-medium bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all" data-filter="logo">Logo</button>
+          <button class="filter-btn px-5 py-2 rounded-full text-sm font-medium bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all" data-filter="poster">Poster</button>
+          <button class="filter-btn px-5 py-2 rounded-full text-sm font-medium bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all" data-filter="uiux">UI/UX</button>
+          <button class="filter-btn px-5 py-2 rounded-full text-sm font-medium bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all" data-filter="package">Package</button>
+        </div>
+      </div>
+    </div>
+    <div class="works-masonry" id="selectedWorksGrid"></div>
+    <div class="mt-14 text-center reveal">
+      <button id="viewAllWorksBtn" class="inline-flex items-center gap-3 px-10 py-4 bg-blue-950 text-white rounded-full font-semibold text-base hover:bg-blue-800 transition-all shadow-lg shadow-blue-950/25 group">View All Works <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i></button>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="py-32 px-6">
+  <div class="max-w-7xl mx-auto">
+    <div class="grid lg:grid-cols-2 gap-16 items-center">
+      <div class="reveal-left">
+        <div class="relative">
+          <div class="img-reveal rounded-3xl"><img src="https://i.postimg.cc/qMt8m2xp/Gemini-Generated-Image-vetc6wvetc6wvetc(1).png" alt="Bishr KV" class="w-full rounded-3xl object-cover aspect-[4/5]"></div>
+          <div class="absolute -bottom-6 -right-6 bg-white rounded-2xl p-5 shadow-xl shadow-blue-100/50 border border-blue-50 float">
+            <div class="flex items-center gap-3"><div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center"><i data-lucide="award" class="w-6 h-6 text-white"></i></div><div><p class="text-2xl font-bold text-blue-900 counter" data-target="8">0</p><p class="text-xs text-slate-500">Years Experience</p></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal-right">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 mb-6"><span class="text-xs font-semibold text-blue-600 uppercase tracking-wider">About Me</span></div>
+        <h2 class="font-display text-4xl md:text-5xl font-bold text-blue-950 tracking-tight leading-tight">Designing with purpose &<br/><span class="text-gradient">passion</span></h2>
+        <p class="mt-6 text-slate-500 text-lg leading-relaxed">I'm Bishr KV — a multidisciplinary graphic designer with over 8 years of experience transforming brands through thoughtful visual storytelling.</p>
+        <p class="mt-4 text-slate-500 leading-relaxed">From startups to established brands, I've helped businesses create cohesive identities that connect with audiences on a deeper level.</p>
+        <div class="mt-10 grid grid-cols-3 gap-6">
+          <div class="text-center p-4 rounded-2xl bg-blue-50/50 border border-blue-100"><p class="text-3xl font-bold text-blue-600 counter" data-target="150">0</p><p class="text-xs text-slate-500 mt-1">Projects Done</p></div>
+          <div class="text-center p-4 rounded-2xl bg-blue-50/50 border border-blue-100"><p class="text-3xl font-bold text-blue-600 counter" data-target="80">0</p><p class="text-xs text-slate-500 mt-1">Happy Clients</p></div>
+          <div class="text-center p-4 rounded-2xl bg-blue-50/50 border border-blue-100"><p class="text-3xl font-bold text-blue-600 counter" data-target="12">0</p><p class="text-xs text-slate-500 mt-1">Awards Won</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services" class="py-32 px-6 bg-blue-50/30 grid-bg-dense">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-20">
+      <div class="reveal inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-blue-100 mb-6"><span class="text-xs font-semibold text-blue-600 uppercase tracking-wider">What I Do</span></div>
+      <h2 class="reveal delay-1 font-display text-4xl md:text-5xl font-bold text-blue-950 tracking-tight">Services I <span class="text-gradient">Offer</span></h2>
+    </div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="reveal delay-1 group bg-white rounded-3xl p-8 border border-blue-100 hover:border-blue-300 transition-all duration-500 hover:shadow-xl hover:shadow-blue-100/50 hover:-translate-y-2"><div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-600 group-hover:scale-110 transition-all duration-500"><i data-lucide="pen-tool" class="w-7 h-7 text-blue-600 group-hover:text-white transition-colors"></i></div><h3 class="font-display text-xl font-bold text-blue-950 mb-3">Logo Design</h3><p class="text-slate-500 text-sm leading-relaxed">Memorable custom logos that communicate your brand’s personality and make a strong first impression.</p></div>
+      <div class="reveal delay-2 group bg-white rounded-3xl p-8 border border-blue-100 hover:border-blue-300 transition-all duration-500 hover:shadow-xl hover:shadow-blue-100/50 hover:-translate-y-2"><div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-600 group-hover:scale-110 transition-all duration-500"><i data-lucide="image" class="w-7 h-7 text-blue-600 group-hover:text-white transition-colors"></i></div><h3 class="font-display text-xl font-bold text-blue-950 mb-3">Poster Design</h3><p class="text-slate-500 text-sm leading-relaxed">Eye-catching posters built to grab attention, communicate fast, and look great in print or digital.</p></div>
+      <div class="reveal delay-3 group bg-white rounded-3xl p-8 border border-blue-100 hover:border-blue-300 transition-all duration-500 hover:shadow-xl hover:shadow-blue-100/50 hover:-translate-y-2"><div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-600 group-hover:scale-110 transition-all duration-500"><i data-lucide="palette" class="w-7 h-7 text-blue-600 group-hover:text-white transition-colors"></i></div><h3 class="font-display text-xl font-bold text-blue-950 mb-3">Brand Identity</h3><p class="text-slate-500 text-sm leading-relaxed">Complete visual identity systems including color palettes, typography, and brand guidelines.</p></div>
+      <div class="reveal delay-1 group bg-white rounded-3xl p-8 border border-blue-100 hover:border-blue-300 transition-all duration-500 hover:shadow-xl hover:shadow-blue-100/50 hover:-translate-y-2"><div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-600 group-hover:scale-110 transition-all duration-500"><i data-lucide="clapperboard" class="w-7 h-7 text-blue-600 group-hover:text-white transition-colors"></i></div><h3 class="font-display text-xl font-bold text-blue-950 mb-3">Motion Graphics</h3><p class="text-slate-500 text-sm leading-relaxed">Animated visuals and motion design that bring your brand stories and campaigns to life.</p></div>
+      <div class="reveal delay-2 group bg-white rounded-3xl p-8 border border-blue-100 hover:border-blue-300 transition-all duration-500 hover:shadow-xl hover:shadow-blue-100/50 hover:-translate-y-2"><div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-600 group-hover:scale-110 transition-all duration-500"><i data-lucide="monitor-smartphone" class="w-7 h-7 text-blue-600 group-hover:text-white transition-colors"></i></div><h3 class="font-display text-xl font-bold text-blue-950 mb-3">UI/UX Design</h3><p class="text-slate-500 text-sm leading-relaxed">Clean, intuitive interfaces and smooth user experiences designed for clarity and engagement.</p></div>
+      <div class="reveal delay-3 group bg-white rounded-3xl p-8 border border-blue-100 hover:border-blue-300 transition-all duration-500 hover:shadow-xl hover:shadow-blue-100/50 hover:-translate-y-2"><div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-600 group-hover:scale-110 transition-all duration-500"><i data-lucide="package" class="w-7 h-7 text-blue-600 group-hover:text-white transition-colors"></i></div><h3 class="font-display text-xl font-bold text-blue-950 mb-3">Package Design</h3><p class="text-slate-500 text-sm leading-relaxed">Beautiful packaging concepts that make products stand out and feel premium on the shelf.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="py-32 px-6 relative overflow-hidden">
+  <div class="absolute top-0 right-0 w-96 h-96 bg-blue-50 rounded-full blur-3xl opacity-50 -z-10"></div>
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-20">
+      <div class="reveal inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 mb-6"><span class="text-xs font-semibold text-blue-600 uppercase tracking-wider">How I Work</span></div>
+      <h2 class="reveal delay-1 font-display text-4xl md:text-5xl font-bold text-blue-950 tracking-tight">My Design <span class="text-gradient">Process</span></h2>
+    </div>
+    <div class="relative">
+      <div class="hidden lg:block absolute top-1/2 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-100 via-blue-300 to-blue-100 -translate-y-1/2"></div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 relative">
+        <div class="reveal delay-1 group"><div class="bg-white rounded-3xl p-8 border border-blue-100 hover:border-blue-400 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-100/50 relative"><div class="absolute -top-4 left-8"><div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/30 group-hover:scale-110 transition-transform"><span class="text-white font-display font-bold text-sm">01</span></div></div><div class="mt-4 w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-5 group-hover:bg-blue-600 transition-colors duration-500"><i data-lucide="search" class="w-8 h-8 text-blue-600 group-hover:text-white transition-colors duration-500"></i></div><h3 class="font-display text-xl font-bold text-blue-950 mb-3">Discover</h3><p class="text-slate-500 text-sm leading-relaxed">Deep research into your brand, audience, and competitive landscape to uncover key insights.</p><div class="hidden lg:flex absolute -right-4 top-1/2 -translate-y-1/2 z-10"><div class="w-8 h-8 bg-white border border-blue-200 rounded-full flex items-center justify-center shadow-sm"><i data-lucide="chevron-right" class="w-4 h-4 text-blue-400"></i></div></div></div></div>
+        <div class="reveal delay-2 group"><div class="bg-white rounded-3xl p-8 border border-blue-100 hover:border-blue-400 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-100/50 relative"><div class="absolute -top-4 left-8"><div class="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30 group-hover:scale-110 transition-transform"><span class="text-white font-display font-bold text-sm">02</span></div></div><div class="mt-4 w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-5 group-hover:bg-blue-500 transition-colors duration-500"><i data-lucide="lightbulb" class="w-8 h-8 text-blue-500 group-hover:text-white transition-colors duration-500"></i></div><h3 class="font-display text-xl font-bold text-blue-950 mb-3">Ideate</h3><p class="text-slate-500 text-sm leading-relaxed">Exploring creative concepts through sketching, moodboarding, and collaborative brainstorming.</p><div class="hidden lg:flex absolute -right-4 top-1/2 -translate-y-1/2 z-10"><div class="w-8 h-8 bg-white border border-blue-200 rounded-full flex items-center justify-center shadow-sm"><i data-lucide="chevron-right" class="w-4 h-4 text-blue-400"></i></div></div></div></div>
+        <div class="reveal delay-3 group"><div class="bg-white rounded-3xl p-8 border border-blue-100 hover:border-blue-400 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-100/50 relative"><div class="absolute -top-4 left-8"><div class="w-10 h-10 bg-blue-400 rounded-xl flex items-center justify-center shadow-lg shadow-blue-400/30 group-hover:scale-110 transition-transform"><span class="text-white font-display font-bold text-sm">03</span></div></div><div class="mt-4 w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-5 group-hover:bg-blue-400 transition-colors duration-500"><i data-lucide="pen-tool" class="w-8 h-8 text-blue-400 group-hover:text-white transition-colors duration-500"></i></div><h3 class="font-display text-xl font-bold text-blue-950 mb-3">Design</h3><p class="text-slate-500 text-sm leading-relaxed">Crafting polished, pixel-perfect designs with meticulous attention to every detail.</p><div class="hidden lg:flex absolute -right-4 top-1/2 -translate-y-1/2 z-10"><div class="w-8 h-8 bg-white border border-blue-200 rounded-full flex items-center justify-center shadow-sm"><i data-lucide="chevron-right" class="w-4 h-4 text-blue-400"></i></div></div></div></div>
+        <div class="reveal delay-4 group"><div class="bg-white rounded-3xl p-8 border border-blue-100 hover:border-blue-400 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-100/50 relative"><div class="absolute -top-4 left-8"><div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-400 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30 group-hover:scale-110 transition-transform"><span class="text-white font-display font-bold text-sm">04</span></div></div><div class="mt-4 w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-5 group-hover:bg-gradient-to-br group-hover:from-blue-600 group-hover:to-blue-400 transition-all duration-500"><i data-lucide="rocket" class="w-8 h-8 text-blue-500 group-hover:text-white transition-colors duration-500"></i></div><h3 class="font-display text-xl font-bold text-blue-950 mb-3">Deliver</h3><p class="text-slate-500 text-sm leading-relaxed">Finalizing assets, preparing files, and ensuring seamless handoff for launch.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills" class="py-32 px-6">
+  <div class="max-w-7xl mx-auto">
+    <div class="grid lg:grid-cols-2 gap-16">
+      <div>
+        <div class="reveal inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 mb-6"><span class="text-xs font-semibold text-blue-600 uppercase tracking-wider">Expertise</span></div>
+        <h2 class="reveal delay-1 font-display text-4xl md:text-5xl font-bold text-blue-950 tracking-tight mb-12">Skills & <span class="text-gradient">Tools</span></h2>
+        <div class="space-y-8">
+          <div class="reveal delay-1"><div class="flex justify-between mb-2"><span class="text-sm font-semibold text-blue-900">Adobe Illustrator</span><span class="text-sm font-medium text-blue-500">95%</span></div><div class="h-2 bg-blue-100 rounded-full overflow-hidden"><div class="skill-fill h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full" data-width="95%"></div></div></div>
+          <div class="reveal delay-2"><div class="flex justify-between mb-2"><span class="text-sm font-semibold text-blue-900">Adobe Photoshop</span><span class="text-sm font-medium text-blue-500">92%</span></div><div class="h-2 bg-blue-100 rounded-full overflow-hidden"><div class="skill-fill h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full" data-width="92%"></div></div></div>
+          <div class="reveal delay-3"><div class="flex justify-between mb-2"><span class="text-sm font-semibold text-blue-900">Figma</span><span class="text-sm font-medium text-blue-500">90%</span></div><div class="h-2 bg-blue-100 rounded-full overflow-hidden"><div class="skill-fill h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full" data-width="90%"></div></div></div>
+          <div class="reveal delay-4"><div class="flex justify-between mb-2"><span class="text-sm font-semibold text-blue-900">After Effects</span><span class="text-sm font-medium text-blue-500">85%</span></div><div class="h-2 bg-blue-100 rounded-full overflow-hidden"><div class="skill-fill h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full" data-width="85%"></div></div></div>
+        </div>
+      </div>
+      <div class="reveal-right">
+        <div class="grid grid-cols-3 gap-4">
+          <div class="bg-blue-50 rounded-2xl p-6 flex flex-col items-center justify-center gap-3 hover:bg-blue-100 transition-colors group cursor-pointer border border-blue-100"><div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm group-hover:shadow-md group-hover:scale-110 transition-all"><i data-lucide="figma" class="w-6 h-6 text-blue-600"></i></div><span class="text-xs font-medium text-blue-700">Figma</span></div>
+          <div class="bg-blue-50 rounded-2xl p-6 flex flex-col items-center justify-center gap-3 hover:bg-blue-100 transition-colors group cursor-pointer border border-blue-100"><div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm group-hover:shadow-md group-hover:scale-110 transition-all"><i data-lucide="image" class="w-6 h-6 text-blue-600"></i></div><span class="text-xs font-medium text-blue-700">Photoshop</span></div>
+          <div class="bg-blue-50 rounded-2xl p-6 flex flex-col items-center justify-center gap-3 hover:bg-blue-100 transition-colors group cursor-pointer border border-blue-100"><div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm group-hover:shadow-md group-hover:scale-110 transition-all"><i data-lucide="pen-tool" class="w-6 h-6 text-blue-600"></i></div><span class="text-xs font-medium text-blue-700">Illustrator</span></div>
+          <div class="bg-blue-50 rounded-2xl p-6 flex flex-col items-center justify-center gap-3 hover:bg-blue-100 transition-colors group cursor-pointer border border-blue-100"><div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm group-hover:shadow-md group-hover:scale-110 transition-all"><i data-lucide="play" class="w-6 h-6 text-blue-600"></i></div><span class="text-xs font-medium text-blue-700">After Effects</span></div>
+          <div class="bg-blue-50 rounded-2xl p-6 flex flex-col items-center justify-center gap-3 hover:bg-blue-100 transition-colors group cursor-pointer border border-blue-100"><div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm group-hover:shadow-md group-hover:scale-110 transition-all"><i data-lucide="file-text" class="w-6 h-6 text-blue-600"></i></div><span class="text-xs font-medium text-blue-700">InDesign</span></div>
+          <div class="bg-blue-50 rounded-2xl p-6 flex flex-col items-center justify-center gap-3 hover:bg-blue-100 transition-colors group cursor-pointer border border-blue-100"><div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm group-hover:shadow-md group-hover:scale-110 transition-all"><i data-lucide="code" class="w-6 h-6 text-blue-600"></i></div><span class="text-xs font-medium text-blue-700">Webflow</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="py-32 px-6 bg-blue-50/30">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-16">
+      <div class="reveal inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-blue-100 mb-6"><span class="text-xs font-semibold text-blue-600 uppercase tracking-wider">Testimonials</span></div>
+      <h2 class="reveal delay-1 font-display text-4xl md:text-5xl font-bold text-blue-950 tracking-tight">Client <span class="text-gradient">Love</span></h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="reveal delay-1 testimonial-card bg-white rounded-3xl p-8 border border-blue-100"><div class="flex gap-1 mb-6"><i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i><i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i><i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i><i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i><i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i></div><p class="text-slate-600 text-sm leading-relaxed mb-8">"Bishr completely transformed our brand. The attention to detail behind every design decision was remarkable."</p><div class="flex items-center gap-3"><img src="https://i.postimg.cc/PxK3WtBK/Realistic-AI-portrait-How-it-was-created-Telegram.jpg" class="w-10 h-10 rounded-full object-cover"><div><p class="text-sm font-semibold text-blue-900">Mr Jalal</p><p class="text-xs text-slate-400">CEO, Lumina Wellness</p></div></div></div>
+      <div class="reveal delay-2 testimonial-card bg-white rounded-3xl p-8 border border-blue-100"><div class="flex gap-1 mb-6"><i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i><i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i><i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i><i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i></div><p class="text-slate-600 text-sm leading-relaxed mb-8">"Working with Bishr was a complete game-changer. The UI designs were both beautiful and incredibly intuitive."</p><div class="flex items-center gap-3"><img src="https://i.postimg.cc/76vDFNhw/Neon-Reflection-Strength-in-Thought-(1).jpg" class="w-10 h-10 rounded-full object-cover"><div><p class="text-sm font-semibold text-blue-900">Dr Musthafa</p><p class="text-xs text-slate-400">CTO, FinFlow</p></div></div></div>
+      <div class="reveal delay-3 testimonial-card bg-white rounded-3xl p-8 border border-blue-100"><div class="flex gap-1 mb-6"><i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i><i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i><i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i><i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i><i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i></div><p class="text-slate-600 text-sm leading-relaxed mb-8">"The packaging Bishr created was stunning. Customers actually photograph and share our packaging."</p><div class="flex items-center gap-3"><img src="https://i.postimg.cc/ZYHDSgdQ/6549b1659381e98dfa588e52bebbb937.jpg" class="w-10 h-10 rounded-full object-cover"><div><p class="text-sm font-semibold text-blue-900">Sabith PKP</p><p class="text-xs text-slate-400">Founder, Artisan Coffee</p></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="py-32 px-6">
+  <div class="max-w-7xl mx-auto">
+    <div class="grid lg:grid-cols-2 gap-16">
+      <div class="reveal-left">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 mb-6"><span class="text-xs font-semibold text-blue-600 uppercase tracking-wider">Get In Touch</span></div>
+        <h2 class="font-display text-4xl md:text-5xl font-bold text-blue-950 tracking-tight leading-tight">Let's create<br/>something <span class="text-gradient">amazing</span></h2>
+        <p class="mt-6 text-slate-500 text-lg leading-relaxed">Have a project in mind? I'd love to hear about it.</p>
+        <div class="mt-10 space-y-6">
+          <div class="flex items-center gap-4"><div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center border border-blue-100"><i data-lucide="mail" class="w-5 h-5 text-blue-600"></i></div><div><p class="text-xs text-slate-400">Email</p><a href="https://mail.google.com/mail/?view=cm&fs=1&to=bishrkv786@gmail.com" target="_blank" rel="noopener noreferrer" class="text-sm font-semibold text-blue-900 hover:text-blue-600 transition-colors">bishrkv786@gmail.com</a></div></div>
+          <div class="flex items-center gap-4"><div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center border border-blue-100"><i data-lucide="phone" class="w-5 h-5 text-blue-600"></i></div><div><p class="text-xs text-slate-400">Phone</p><a href="tel:+919778024332" class="text-sm font-semibold text-blue-900 hover:text-blue-600 transition-colors">+91 9778024332</a></div></div>
+          <div class="flex items-center gap-4"><div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center border border-blue-100"><i data-lucide="map-pin" class="w-5 h-5 text-blue-600"></i></div><div><p class="text-xs text-slate-400">Location</p><p class="text-sm font-semibold text-blue-900">Kerala, India</p></div></div>
+        </div>
+        <div class="mt-10 flex gap-3">
+          <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram" class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center border border-blue-100 hover:bg-blue-600 hover:border-blue-600 group transition-all">
+            <svg class="w-5 h-5 text-blue-600 group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 7.5A4.5 4.5 0 1 0 12 16.5A4.5 4.5 0 0 0 12 7.5ZM12 14.8A2.8 2.8 0 1 1 12 9.2A2.8 2.8 0 0 1 12 14.8ZM17.7 6.3A1.05 1.05 0 1 1 17.7 4.2A1.05 1.05 0 0 1 17.7 6.3ZM20.5 7.2A4.8 4.8 0 0 0 19.2 3.8A4.8 4.8 0 0 0 15.8 2.5C14.4 2.4 9.6 2.4 8.2 2.5A4.8 4.8 0 0 0 4.8 3.8A4.8 4.8 0 0 0 3.5 7.2C3.4 8.6 3.4 13.4 3.5 14.8A4.8 4.8 0 0 0 4.8 18.2A4.8 4.8 0 0 0 8.2 19.5C9.6 19.6 14.4 19.6 15.8 19.5A4.8 4.8 0 0 0 19.2 18.2A4.8 4.8 0 0 0 20.5 14.8C20.6 13.4 20.6 8.6 20.5 7.2ZM18.4 17.1A2.4 2.4 0 0 1 17.1 18.4C16.2 18.8 13.9 18.7 12 18.7C10.1 18.7 7.8 18.8 6.9 18.4A2.4 2.4 0 0 1 5.6 17.1C5.2 16.2 5.3 13.9 5.3 12C5.3 10.1 5.2 7.8 5.6 6.9A2.4 2.4 0 0 1 6.9 5.6C7.8 5.2 10.1 5.3 12 5.3C13.9 5.3 16.2 5.2 17.1 5.6A2.4 2.4 0 0 1 18.4 6.9C18.8 7.8 18.7 10.1 18.7 12C18.7 13.9 18.8 16.2 18.4 17.1Z"/></svg>
+          </a>
+          <a href="https://www.pinterest.com/" target="_blank" rel="noopener noreferrer" aria-label="Pinterest" title="Pinterest" class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center border border-blue-100 hover:bg-blue-600 hover:border-blue-600 group transition-all">
+            <svg class="w-5 h-5 text-blue-600 group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 3 5.5 3 10.39c0 3.18 1.79 5 2.87 5 .44 0 .69-1.23.69-1.58 0-.42-1.06-1.3-1.06-3.03 0-3.59 2.74-6.11 6.76-6.11 3.27 0 5.68 1.85 5.68 5.21 0 2.51-1.01 7.21-4.26 7.21-1.17 0-2.17-.84-2.17-2.04 0-1.76 1.23-3.46 1.23-5.27 0-3.08-4.36-2.52-4.36 1.09 0 .76.09 1.6.34 2.32l-1.37 5.8c-.41 1.74-.06 3.88-.03 4.09.02.12.17.15.24.06.11-.15 1.44-1.78 1.9-3.48.13-.49.75-2.9.75-2.9.37.7 1.44 1.3 2.58 1.3 3.39 0 5.83-3.03 5.83-6.79C21 5.35 17.82 2 12.04 2z"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" title="LinkedIn" class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center border border-blue-100 hover:bg-blue-600 hover:border-blue-600 group transition-all">
+            <svg class="w-5 h-5 text-blue-600 group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.94 6.5A2.44 2.44 0 1 1 6.94 1.62A2.44 2.44 0 0 1 6.94 6.5ZM4.73 22V8.2h4.42V22H4.73ZM12 8.2h4.23v1.88h.06c.59-1.12 2.03-2.3 4.18-2.3 4.47 0 5.3 2.95 5.3 6.79V22h-4.41v-5.89c0-1.41-.03-3.23-1.97-3.23-1.97 0-2.27 1.54-2.27 3.13V22H12V8.2Z"/></svg>
+          </a>
+          <a href="https://wa.me/" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" title="WhatsApp" class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center border border-blue-100 hover:bg-blue-600 hover:border-blue-600 group transition-all">
+            <svg class="w-5 h-5 text-blue-600 group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.49 2 2 6.48 2 12c0 1.91.53 3.77 1.53 5.37L2 22l4.76-1.49A9.94 9.94 0 0 0 12.04 22C17.53 22 22 17.52 22 12S17.53 2 12.04 2Zm0 18.12c-1.7 0-3.35-.46-4.78-1.33l-.34-.2-2.83.88.9-2.75-.22-.36A8.11 8.11 0 0 1 3.9 12c0-4.5 3.66-8.15 8.14-8.15A8.1 8.1 0 0 1 20.1 12c0 4.5-3.66 8.12-8.06 8.12Zm4.57-6.21c-.25-.12-1.47-.72-1.7-.81-.23-.08-.39-.12-.55.13-.16.25-.63.81-.78.98-.15.17-.29.18-.54.06-.25-.12-1.06-.39-2.02-1.24-.75-.66-1.25-1.48-1.4-1.73-.15-.25-.02-.39.1-.52.11-.11.25-.29.37-.44.12-.15.16-.25.24-.42.08-.17.04-.31-.02-.44-.06-.12-.55-1.34-.76-1.83-.2-.48-.4-.41-.55-.42h-.47c-.16 0-.42.06-.64.31-.22.25-.85.83-.85 2.02 0 1.19.87 2.34.99 2.5.12.17 1.7 2.6 4.12 3.65.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.11-.22-.17-.47-.29Z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="reveal-right">
+        <form id="contactForm" action="https://formsubmit.co/ajax/bishrkv786@gmail.com" method="POST" class="bg-white rounded-3xl p-8 md:p-10 border border-blue-100 shadow-xl shadow-blue-100/20">
+          <input type="hidden" name="_subject" value="New message from Bishr KV portfolio">
+          <input type="hidden" name="_captcha" value="false">
+          <div class="grid md:grid-cols-2 gap-5 mb-5">
+            <div><label class="block text-xs font-semibold text-blue-900 mb-2 uppercase tracking-wider">Name</label><input name="name" type="text" placeholder="John Doe" class="w-full px-4 py-3 rounded-xl bg-blue-50/50 border border-blue-100 text-blue-900 text-sm placeholder:text-blue-300 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all" required></div>
+            <div><label class="block text-xs font-semibold text-blue-900 mb-2 uppercase tracking-wider">Email</label><input name="email" type="email" placeholder="john@example.com" class="w-full px-4 py-3 rounded-xl bg-blue-50/50 border border-blue-100 text-blue-900 text-sm placeholder:text-blue-300 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all" required></div>
+          </div>
+          <div class="mb-8"><label class="block text-xs font-semibold text-blue-900 mb-2 uppercase tracking-wider">Message</label><textarea name="message" rows="5" placeholder="Tell me about your project..." class="w-full px-4 py-3 rounded-xl bg-blue-50/50 border border-blue-100 text-blue-900 text-sm placeholder:text-blue-300 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all resize-none" required></textarea></div>
+          <button type="submit" class="w-full py-4 bg-blue-600 text-white rounded-xl font-semibold text-base hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/25 flex items-center justify-center gap-2">Send Message <i data-lucide="send" class="w-4 h-4"></i></button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="py-12 px-6 border-t border-blue-100">
+  <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-2">
+      <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center"><span class="text-white font-display font-bold text-sm">BKV</span></div>
+      <span class="font-display font-bold text-blue-950 cursor-pointer hover:text-blue-600 transition-colors" id="footerName">Bishr KV</span>
+    </div>
+    <p class="text-sm text-slate-400">© 2025 <span class="cursor-pointer hover:text-blue-500 transition-colors" id="footerCopyright">Bishr KV</span>. Crafted with passion & pixels.</p>
+    <a href="#home" class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center border border-blue-100 hover:bg-blue-600 hover:border-blue-600 group transition-all"><i data-lucide="arrow-up" class="w-4 h-4 text-blue-600 group-hover:text-white transition-colors"></i></a>
+  </div>
+</footer>
+</div>
+
+<!-- ALL WORKS PAGE -->
+<div class="all-works-page grid-bg" id="allWorksPage">
+  <div class="py-12 px-6">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex items-center justify-between mb-12">
+        <div><h2 class="font-display text-4xl md:text-5xl font-bold text-blue-950 tracking-tight">All <span class="text-gradient">Works</span></h2><p class="mt-2 text-slate-500">Complete portfolio of my design projects</p></div>
+        <button id="backToMainBtn" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-50 text-blue-600 rounded-full font-semibold text-sm hover:bg-blue-100 transition-all border border-blue-100"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Home</button>
+      </div>
+      <div class="flex gap-2 mb-10 flex-wrap" id="allWorksFilterBtns">
+        <button class="all-filter-btn active px-5 py-2 rounded-full text-sm font-medium bg-blue-600 text-white transition-all" data-filter="all">All</button>
+        <button class="all-filter-btn px-5 py-2 rounded-full text-sm font-medium bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all" data-filter="branding">Branding</button>
+        <button class="all-filter-btn px-5 py-2 rounded-full text-sm font-medium bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all" data-filter="logo">Logo</button>
+        <button class="all-filter-btn px-5 py-2 rounded-full text-sm font-medium bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all" data-filter="poster">Poster</button>
+        <button class="all-filter-btn px-5 py-2 rounded-full text-sm font-medium bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all" data-filter="uiux">UI/UX</button>
+        <button class="all-filter-btn px-5 py-2 rounded-full text-sm font-medium bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all" data-filter="package">Package</button>
+      </div>
+      <div class="works-masonry" id="allWorksGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal-content max-w-md p-8">
+    <div class="text-center mb-8"><div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4"><i data-lucide="lock" class="w-8 h-8 text-white"></i></div><h3 class="font-display text-2xl font-bold text-blue-950">Admin Login</h3><p class="text-sm text-slate-500 mt-1">Enter password to access dashboard</p></div>
+    <div class="space-y-4">
+      <div><label class="block text-xs font-semibold text-blue-900 mb-2 uppercase tracking-wider">Password</label><input type="password" id="loginPassword" placeholder="Enter admin password" class="admin-input text-center text-lg tracking-widest" autocomplete="off"></div>
+      <p class="text-xs text-red-500 hidden text-center" id="loginError">Incorrect password. Try again.</p>
+      <button id="loginBtn" class="w-full py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-all">Unlock Dashboard</button>
+      <button id="loginCancelBtn" class="w-full py-3 bg-transparent text-slate-500 rounded-xl font-medium hover:bg-slate-50 transition-all text-sm">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN DASHBOARD MODAL -->
+<div class="modal-overlay" id="adminModal">
+  <div class="modal-content p-0">
+    <div class="sticky top-0 bg-white/90 backdrop-blur-xl border-b border-blue-100 px-8 py-5 rounded-t-3xl z-10">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3"><div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center"><i data-lucide="shield" class="w-5 h-5 text-white"></i></div><div><h3 class="font-display text-xl font-bold text-blue-950">Admin Dashboard</h3><p class="text-xs text-slate-400">Manage your portfolio — data saved permanently</p></div></div>
+        <button id="adminCloseBtn" class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center hover:bg-slate-200 transition-colors"><i data-lucide="x" class="w-5 h-5 text-slate-500"></i></button>
+      </div>
+    </div>
+    <div class="p-8">
+      <div class="grid grid-cols-3 gap-4 mb-8">
+        <div class="bg-blue-50 rounded-2xl p-5 border border-blue-100"><p class="text-2xl font-bold text-blue-600" id="adminTotalWorks">0</p><p class="text-xs text-slate-500">Total Works</p></div>
+        <div class="bg-blue-50 rounded-2xl p-5 border border-blue-100"><p class="text-2xl font-bold text-blue-600" id="adminFeaturedWorks">0</p><p class="text-xs text-slate-500">Featured</p></div>
+        <div class="bg-blue-50 rounded-2xl p-5 border border-blue-100"><p class="text-2xl font-bold text-blue-600" id="adminOtherWorks">0</p><p class="text-xs text-slate-500">Other</p></div>
+      </div>
+      <div class="bg-blue-50/50 rounded-2xl p-6 border border-blue-100 mb-8">
+        <h4 class="font-display text-lg font-bold text-blue-950 mb-4 flex items-center gap-2"><i data-lucide="plus-circle" class="w-5 h-5 text-blue-600"></i> Add New Work</h4>
+        <div class="grid md:grid-cols-2 gap-4 mb-4">
+          <div><label class="block text-xs font-semibold text-blue-900 mb-1">Title</label><input type="text" id="newTitle" placeholder="Project title" class="admin-input"></div>
+          <div><label class="block text-xs font-semibold text-blue-900 mb-1">Category</label><select id="newCategory" class="admin-input"><option value="branding">Branding</option><option value="logo">Logo</option><option value="poster">Poster</option><option value="uiux">UI/UX</option><option value="package">Package</option></select></div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-4 mb-4">
+          <div><label class="block text-xs font-semibold text-blue-900 mb-1">Description</label><input type="text" id="newDesc" placeholder="Short description" class="admin-input"></div>
+          <div><label class="block text-xs font-semibold text-blue-900 mb-1">Image URL</label><input type="text" id="newImage" placeholder="https://picsum.photos/seed/.../800/600.jpg" class="admin-input"></div>
+        </div>
+        <div class="flex items-center gap-4 mb-4"><label class="flex items-center gap-2 cursor-pointer"><div class="toggle-switch on" id="newFeatured"></div><span class="text-sm font-medium text-blue-900">Show in Selected Works</span></label></div>
+        <button id="addWorkBtn" class="admin-btn admin-btn-primary flex items-center gap-2"><i data-lucide="plus" class="w-4 h-4"></i> Add Work</button>
+      </div>
+      <h4 class="font-display text-lg font-bold text-blue-950 mb-4 flex items-center gap-2"><i data-lucide="layout-grid" class="w-5 h-5 text-blue-600"></i> Manage Works</h4>
+      <div id="adminWorksList" class="space-y-3"></div>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT WORK MODAL -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal-content max-w-lg p-8">
+    <h3 class="font-display text-xl font-bold text-blue-950 mb-6 flex items-center gap-2"><i data-lucide="edit-3" class="w-5 h-5 text-blue-600"></i> Edit Work</h3>
+    <input type="hidden" id="editId">
+    <div class="space-y-4">
+      <div><label class="block text-xs font-semibold text-blue-900 mb-1">Title</label><input type="text" id="editTitle" class="admin-input"></div>
+      <div><label class="block text-xs font-semibold text-blue-900 mb-1">Category</label><select id="editCategory" class="admin-input"><option value="branding">Branding</option><option value="logo">Logo</option><option value="poster">Poster</option><option value="uiux">UI/UX</option><option value="package">Package</option></select></div>
+      <div><label class="block text-xs font-semibold text-blue-900 mb-1">Description</label><input type="text" id="editDesc" class="admin-input"></div>
+      <div><label class="block text-xs font-semibold text-blue-900 mb-1">Image URL</label><input type="text" id="editImage" class="admin-input"></div>
+      <label class="flex items-center gap-2 cursor-pointer"><div class="toggle-switch" id="editFeatured"></div><span class="text-sm font-medium text-blue-900">Show in Selected Works</span></label>
+    </div>
+    <div class="flex gap-3 mt-6">
+      <button id="editSaveBtn" class="admin-btn admin-btn-primary flex-1">Save Changes</button>
+      <button id="editCancelBtn" class="admin-btn admin-btn-ghost flex-1">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav" id="bottomNav">
+  <a href="#home" class="nav-item active" data-section="home"><i data-lucide="home" class="w-4 h-4"></i><span class="hidden sm:inline">Home</span></a>
+  <a href="#about" class="nav-item" data-section="about"><i data-lucide="user" class="w-4 h-4"></i><span class="hidden sm:inline">About</span></a>
+  <a href="#work" class="nav-item" data-section="work"><i data-lucide="briefcase" class="w-4 h-4"></i><span class="hidden sm:inline">Work</span></a>
+  <a href="#services" class="nav-item" data-section="services"><i data-lucide="layers" class="w-4 h-4"></i><span class="hidden sm:inline">Services</span></a>
+  <a href="#skills" class="nav-item" data-section="skills"><i data-lucide="zap" class="w-4 h-4"></i><span class="hidden sm:inline">Skills</span></a>
+  <a href="#contact" class="nav-item" data-section="contact"><i data-lucide="mail" class="w-4 h-4"></i><span class="hidden sm:inline">Contact</span></a>
+</nav>
+
+<script>
+// ===================== HERO TEXT ANIMATION =====================
+function animateHeroText(){
+  const lines=[
+    {el:document.getElementById('heroText1'),text:'Creative',type:'normal',baseDelay:0.4},
+    {el:document.getElementById('heroText2'),text:'Designer',type:'gradient',baseDelay:0.9},
+    {el:document.getElementById('heroText3'),text:'& Thinker',type:'ampersand',baseDelay:1.4}
+  ];
+
+  lines.forEach(line=>{
+    const chars=line.text.split('');
+    let html='';
+    let charIndex=0;
+
+    chars.forEach((char,i)=>{
+      const delay=line.baseDelay+(charIndex*0.045);
+      const style=`animation-delay:${delay}s`;
+
+      if(char===' '){
+        html+=`<span class="space"></span>`;
+      } else if(line.type==='gradient'){
+        html+=`<span class="gradient-char" style="${style}">${char}</span>`;
+        charIndex++;
+      } else if(line.type==='ampersand' && char==='&'){
+        html+=`<span class="ampersand" style="animation-delay:${delay}s">${char}</span>`;
+        charIndex++;
+      } else {
+        html+=`<span class="char" style="${style}">${char}</span>`;
+        charIndex++;
+      }
+    });
+
+    line.el.innerHTML=html;
+  });
+}
+animateHeroText();
+
+// ===================== DATA LAYER =====================
+const DEFAULT_WORKS=[
+  {id:1,title:"Lumina Wellness",category:"branding",desc:"Complete brand overhaul for a luxury wellness retreat including logo, packaging, and digital presence.",image:"https://picsum.photos/seed/brand-luxury/800/600.jpg",featured:true},
+  {id:2,title:"FinFlow Dashboard",category:"uiux",desc:"Financial analytics dashboard with intuitive data visualization and streamlined user workflows.",image:"https://picsum.photos/seed/fintech-app/800/500.jpg",featured:true},
+  {id:3,title:"Artisan Coffee Co.",category:"package",desc:"Premium packaging design for a specialty coffee brand, from bag design to retail displays.",image:"https://picsum.photos/seed/coffee-pack/800/900.jpg",featured:true},
+  {id:4,title:"NexGen Tech",category:"branding",desc:"Future-forward brand identity for an AI startup, blending technology with human warmth.",image:"https://picsum.photos/seed/tech-startup/800/700.jpg",featured:true},
+  {id:5,title:"VitaTrack Health",category:"uiux",desc:"Mobile health tracking app with gamification elements and beautiful data visualization.",image:"https://picsum.photos/seed/health-app-ui/800/550.jpg",featured:true},
+  {id:6,title:"Onyx Magazine",category:"poster",desc:"Art direction and editorial design for a quarterly culture and design publication.",image:"https://picsum.photos/seed/magazine-design/800/1100.jpg",featured:true},
+  {id:7,title:"Solaris Energy",category:"branding",desc:"Sustainable energy brand with a visual system inspired by nature and innovation.",image:"https://picsum.photos/seed/solar-energy/800/800.jpg",featured:false},
+  {id:8,title:"TravelMate App",category:"uiux",desc:"Travel planning app with personalized itineraries and social sharing features.",image:"https://picsum.photos/seed/travel-app/800/600.jpg",featured:false},
+  {id:9,title:"Brew & Bite",category:"package",desc:"Menu and branding collateral for an artisan café chain with hand-drawn illustrations.",image:"https://picsum.photos/seed/cafe-brand/800/1000.jpg",featured:false},
+  {id:10,title:"Motion Reel 2024",category:"poster",desc:"Annual motion design showreel featuring brand animations and UI transitions.",image:"https://picsum.photos/seed/motion-reel/800/450.jpg",featured:false},
+  {id:11,title:"Echo Music Brand",category:"branding",desc:"Visual identity for a music streaming platform targeting Gen Z audiences.",image:"https://picsum.photos/seed/music-brand/800/650.jpg",featured:false},
+  {id:12,title:"Nova Fitness",category:"uiux",desc:"Workout tracking app with AI-powered form correction and progress analytics.",image:"https://picsum.photos/seed/fitness-app/800/750.jpg",featured:false},
+];
+
+const API_BASE='';
+let worksCache=[];
+let worksReadyPromise=null;
+
+function normalizeWorks(works){
+  const legacyCategoryMap={brand:'branding',ui:'uiux',print:'package',motion:'poster'};
+  return Array.isArray(works)?works.map((work,index)=>({
+    id:Number(work.id)||index+1,
+    title:work.title||'Untitled Project',
+    category:legacyCategoryMap[work.category]||work.category||'branding',
+    desc:work.desc||'No description provided.',
+    image:work.image||`https://picsum.photos/seed/work${index+1}/800/600.jpg`,
+    featured:Boolean(work.featured)
+  })):[];
+}
+
+async function loadWorks(){
+  const response=await fetch(`${API_BASE}/api/works`);
+  if(!response.ok)throw new Error('Failed to load works');
+  const works=normalizeWorks(await response.json());
+  worksCache=works.length?works:normalizeWorks(DEFAULT_WORKS);
+  if(!works.length)await saveWorks(worksCache);
+  return worksCache;
+}
+
+function ensureWorksLoaded(){
+  if(!worksReadyPromise)worksReadyPromise=loadWorks().catch(error=>{worksCache=normalizeWorks(DEFAULT_WORKS);console.error(error);showToast('Storage error','Using default portfolio data until the server is available.');return worksCache;});
+  return worksReadyPromise;
+}
+
+function getWorks(){return worksCache.length?worksCache:normalizeWorks(DEFAULT_WORKS)}
+function getNextId(){const w=getWorks();return w.length?Math.max(...w.map(x=>x.id))+1:1}
+async function saveWorks(works){
+  const normalized=normalizeWorks(works);
+  const response=await fetch(`${API_BASE}/api/works`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(normalized)});
+  if(!response.ok)throw new Error('Failed to save works');
+  worksCache=normalized;
+  return worksCache;
+}
+
+// ===================== RENDER WORKS (Natural Image Size / Masonry) =====================
+const categoryLabels={branding:"Branding",logo:"Logo Design",poster:"Poster Design",uiux:"UI/UX Design",package:"Package Design"};
+
+function createProjectCard(work){
+  return `<div class="project-card" data-category="${work.category}">
+    <img src="${work.image}" alt="${work.title}" onerror="this.src='https://picsum.photos/seed/fallback${work.id}/800/600.jpg'">
+    ${work.featured?'<div class="featured-badge">Featured</div>':''}
+    <div class="overlay">
+      <span class="text-blue-200 text-xs font-medium uppercase tracking-wider mb-1">${categoryLabels[work.category]||work.category}</span>
+      <h3 class="text-white font-display text-xl font-bold">${work.title}</h3>
+      <p class="text-blue-100 text-sm mt-2 line-clamp-2">${work.desc}</p>
+    </div>
+  </div>`;
+}
+
+function renderSelectedWorks(filter='all'){
+  const works=getWorks().filter(w=>w.featured);
+  const filtered=filter==='all'?works:works.filter(w=>w.category===filter);
+  document.getElementById('selectedWorksGrid').innerHTML=filtered.length?filtered.map(createProjectCard).join(''):'<div style="column-span:all" class="text-center py-20 text-slate-400"><p class="text-lg">No featured works in this category.</p></div>';
+}
+
+function renderAllWorks(filter='all'){
+  const works=getWorks();
+  const filtered=filter==='all'?works:works.filter(w=>w.category===filter);
+  document.getElementById('allWorksGrid').innerHTML=filtered.length?filtered.map(createProjectCard).join(''):'<div style="column-span:all" class="text-center py-20 text-slate-400"><p class="text-lg">No works in this category.</p></div>';
+}
+
+// ===================== INIT =====================
+async function initApp(){
+  await ensureWorksLoaded();
+  lucide.createIcons();
+  renderSelectedWorks();
+  renderAllWorks();
+}
+initApp();
+
+window.addEventListener('load',()=>{setTimeout(()=>{document.getElementById('loadingScreen').classList.add('hidden')},1800)});
+
+// Cursor
+const blob=document.getElementById('cursorBlob');
+document.addEventListener('mousemove',e=>{blob.style.left=e.clientX+'px';blob.style.top=e.clientY+'px'});
+document.querySelectorAll('a,button,input,textarea,select,.testimonial-card').forEach(el=>{el.addEventListener('mouseenter',()=>blob.classList.add('hovering'));el.addEventListener('mouseleave',()=>blob.classList.remove('hovering'))});
+if('ontouchstart' in window)blob.style.display='none';
+
+// Scroll Reveal
+const ro=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting)en.target.classList.add('active')})},{threshold:.15,rootMargin:'0px 0px -50px 0px'});
+document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.img-reveal').forEach(el=>ro.observe(el));
+
+// Skill Bars
+const so=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting)en.target.style.width=en.target.dataset.width})},{threshold:.5});
+document.querySelectorAll('.skill-fill').forEach(el=>so.observe(el));
+
+// Counters
+const co=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting&&!en.target.dataset.counted){en.target.dataset.counted='true';const t=parseInt(en.target.dataset.target);const s=performance.now();(function u(c){const p=Math.min((c-s)/2000,1);const e2=1-Math.pow(1-p,3);en.target.textContent=Math.round(t*e2)+'+';if(p<1)requestAnimationFrame(u)})(s)}})},{threshold:.5});
+document.querySelectorAll('.counter').forEach(el=>co.observe(el));
+
+// Active Nav
+const sections=document.querySelectorAll('section[id]');
+const navItems=document.querySelectorAll('.nav-item');
+function updateNav(){let c='';sections.forEach(s=>{if(scrollY>=s.offsetTop-200)c=s.id});navItems.forEach(n=>{n.classList.remove('active');if(n.dataset.section===c)n.classList.add('active')})}
+window.addEventListener('scroll',updateNav);
+const bn=document.getElementById('bottomNav');
+window.addEventListener('scroll',()=>bn.classList.toggle('scrolled',scrollY>100));
+
+// Filter - Selected
+document.getElementById('filterBtns').addEventListener('click',e=>{
+  const btn=e.target.closest('.filter-btn');if(!btn)return;
+  document.querySelectorAll('#filterBtns .filter-btn').forEach(b=>{b.classList.remove('bg-blue-600','text-white');b.classList.add('bg-blue-50','text-blue-600')});
+  btn.classList.remove('bg-blue-50','text-blue-600');btn.classList.add('bg-blue-600','text-white');
+  renderSelectedWorks(btn.dataset.filter);
+});
+
+// Filter - All Works
+document.getElementById('allWorksFilterBtns').addEventListener('click',e=>{
+  const btn=e.target.closest('.all-filter-btn');if(!btn)return;
+  document.querySelectorAll('.all-filter-btn').forEach(b=>{b.classList.remove('bg-blue-600','text-white');b.classList.add('bg-blue-50','text-blue-600')});
+  btn.classList.remove('bg-blue-50','text-blue-600');btn.classList.add('bg-blue-600','text-white');
+  renderAllWorks(btn.dataset.filter);
+});
+
+// Contact Form
+document.getElementById('contactForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const form=e.target;
+  const submitBtn=form.querySelector('button[type="submit"]');
+  const originalText=submitBtn.innerHTML;
+  submitBtn.disabled=true;
+  submitBtn.innerHTML='Sending...';
+  try{
+    const response=await fetch(form.action,{method:'POST',body:new FormData(form),headers:{Accept:'application/json'}});
+    if(!response.ok)throw new Error('Failed to send message');
+    showToast('Message Sent!',"Your message has been sent to bishrkv786@gmail.com.");
+    form.reset();
+  }catch(error){
+    showToast('Send Failed','Please try again or email bishrkv786@gmail.com directly.');
+  }finally{
+    submitBtn.disabled=false;
+    submitBtn.innerHTML=originalText;
+  }
+});
+
+// Smooth Scroll
+document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'})})});
+
+// Parallax
+document.addEventListener('mousemove',e=>{const x=e.clientX-innerWidth/2;const y=e.clientY-innerHeight/2;document.querySelectorAll('.parallax').forEach(el=>{const s=parseFloat(el.dataset.speed)||.03;el.style.transform=`translate(${x*s}px,${y*s}px)`})});
+
+// ===================== ALL WORKS PAGE =====================
+document.getElementById('viewAllWorksBtn').addEventListener('click',()=>{
+  document.getElementById('mainSite').style.display='none';
+  document.getElementById('allWorksPage').classList.add('visible');
+  document.getElementById('bottomNav').style.display='none';
+  window.scrollTo(0,0);renderAllWorks();lucide.createIcons();
+});
+document.getElementById('backToMainBtn').addEventListener('click',()=>{
+  document.getElementById('allWorksPage').classList.remove('visible');
+  document.getElementById('mainSite').style.display='block';
+  document.getElementById('bottomNav').style.display='flex';
+  window.scrollTo(0,0);renderSelectedWorks();
+});
+
+// ===================== LOGIN =====================
+document.getElementById('footerName').addEventListener('click',openLogin);
+document.getElementById('footerCopyright').addEventListener('click',openLogin);
+function openLogin(){document.getElementById('loginModal').classList.add('open');document.getElementById('loginPassword').value='';document.getElementById('loginError').classList.add('hidden');setTimeout(()=>document.getElementById('loginPassword').focus(),300)}
+document.getElementById('loginCancelBtn').addEventListener('click',()=>document.getElementById('loginModal').classList.remove('open'));
+document.getElementById('loginBtn').addEventListener('click',attemptLogin);
+document.getElementById('loginPassword').addEventListener('keydown',e=>{if(e.key==='Enter')attemptLogin()});
+function attemptLogin(){if(document.getElementById('loginPassword').value==='bishr'){document.getElementById('loginModal').classList.remove('open');openAdmin()}else{document.getElementById('loginError').classList.remove('hidden');document.getElementById('loginPassword').classList.add('shake');setTimeout(()=>document.getElementById('loginPassword').classList.remove('shake'),400)}}
+
+// ===================== ADMIN =====================
+async function openAdmin(){
+  await ensureWorksLoaded();
+  document.getElementById('adminModal').classList.add('open');
+  renderAdminList();
+  lucide.createIcons();
+}
+document.getElementById('adminCloseBtn').addEventListener('click',()=>{document.getElementById('adminModal').classList.remove('open');renderSelectedWorks();renderAllWorks()});
+
+function renderAdminList(){
+  const works=getWorks();const featured=works.filter(w=>w.featured).length;
+  document.getElementById('adminTotalWorks').textContent=works.length;
+  document.getElementById('adminFeaturedWorks').textContent=featured;
+  document.getElementById('adminOtherWorks').textContent=works.length-featured;
+  document.getElementById('adminWorksList').innerHTML=works.map(w=>`
+    <div class="admin-work-item flex items-center gap-4 p-4 rounded-2xl border border-blue-50" data-id="${w.id}">
+      <img src="${w.image}" class="w-16 h-16 rounded-xl object-cover flex-shrink-0" onerror="this.src='https://picsum.photos/seed/fb${w.id}/160/160.jpg'">
+      <div class="flex-1 min-w-0"><div class="flex items-center gap-2"><h5 class="font-semibold text-blue-950 text-sm truncate">${w.title}</h5>${w.featured?'<span class="px-2 py-0.5 bg-blue-600 text-white text-[10px] font-bold rounded-full uppercase flex-shrink-0">Featured</span>':'<span class="px-2 py-0.5 bg-slate-200 text-slate-500 text-[10px] font-bold rounded-full uppercase flex-shrink-0">Other</span>'}</div><p class="text-xs text-slate-400 mt-0.5">${categoryLabels[w.category]||w.category}</p></div>
+      <div class="flex items-center gap-2 flex-shrink-0">
+        <div class="toggle-switch ${w.featured?'on':''}" onclick="toggleFeatured(${w.id})" title="${w.featured?'Remove from Selected':'Add to Selected'}"></div>
+        <button onclick="openEdit(${w.id})" class="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center hover:bg-blue-100 transition-colors"><i data-lucide="edit-3" class="w-4 h-4 text-blue-600"></i></button>
+        <button onclick="deleteWork(${w.id})" class="w-9 h-9 bg-red-50 rounded-lg flex items-center justify-center hover:bg-red-100 transition-colors"><i data-lucide="trash-2" class="w-4 h-4 text-red-500"></i></button>
+      </div>
+    </div>`).join('');
+  lucide.createIcons();
+}
+
+window.toggleFeatured=async function(id){const works=getWorks();const w=works.find(x=>x.id===id);if(w){w.featured=!w.featured;try{await saveWorks(works);renderAdminList();renderSelectedWorks();renderAllWorks()}catch(error){showToast('Save failed','Could not update featured state.')}}};
+window.deleteWork=async function(id){let works=getWorks();works=works.filter(x=>x.id!==id);try{await saveWorks(works);renderAdminList();renderSelectedWorks();renderAllWorks();showToast('Deleted','Work has been permanently removed.')}catch(error){showToast('Delete failed','Could not remove the work right now.')}};
+
+document.getElementById('newFeatured').addEventListener('click',function(){this.classList.toggle('on')});
+document.getElementById('addWorkBtn').addEventListener('click',async()=>{
+  const title=document.getElementById('newTitle').value.trim();const category=document.getElementById('newCategory').value;const desc=document.getElementById('newDesc').value.trim();const image=document.getElementById('newImage').value.trim();const featured=document.getElementById('newFeatured').classList.contains('on');
+  if(!title){showToast('Error','Please enter a title.');return}
+  const works=getWorks();
+  works.push({id:getNextId(),title,category,desc:desc||'No description provided.',image:image||`https://picsum.photos/seed/${title.replace(/\s/g,'-').toLowerCase()}/800/600.jpg`,featured});
+  try{await saveWorks(works);renderAdminList();renderSelectedWorks();renderAllWorks();document.getElementById('newTitle').value='';document.getElementById('newDesc').value='';document.getElementById('newImage').value='';document.getElementById('newFeatured').classList.remove('on');showToast('Added!','New work permanently saved.')}catch(error){showToast('Save failed','Could not store the new work.')}
+});
+
+window.openEdit=function(id){const works=getWorks();const w=works.find(x=>x.id===id);if(!w)return;document.getElementById('editId').value=id;document.getElementById('editTitle').value=w.title;document.getElementById('editCategory').value=w.category;document.getElementById('editDesc').value=w.desc;document.getElementById('editImage').value=w.image;const ft=document.getElementById('editFeatured');w.featured?ft.classList.add('on'):ft.classList.remove('on');document.getElementById('editModal').classList.add('open');lucide.createIcons()};
+document.getElementById('editFeatured').addEventListener('click',function(){this.classList.toggle('on')});
+document.getElementById('editCancelBtn').addEventListener('click',()=>document.getElementById('editModal').classList.remove('open'));
+document.getElementById('editSaveBtn').addEventListener('click',async()=>{
+  const id=parseInt(document.getElementById('editId').value);const works=getWorks();const w=works.find(x=>x.id===id);if(!w)return;
+  w.title=document.getElementById('editTitle').value.trim()||w.title;w.category=document.getElementById('editCategory').value;w.desc=document.getElementById('editDesc').value.trim()||w.desc;w.image=document.getElementById('editImage').value.trim()||w.image;w.featured=document.getElementById('editFeatured').classList.contains('on');
+  try{await saveWorks(works);document.getElementById('editModal').classList.remove('open');renderAdminList();renderSelectedWorks();renderAllWorks();showToast('Saved!','Changes permanently saved.')}catch(error){showToast('Save failed','Could not update this work.')}
+});
+
+window.addEventListener('beforeunload',()=>{worksReadyPromise=null});
+
+['loginModal','adminModal','editModal'].forEach(id=>{document.getElementById(id).addEventListener('click',e=>{if(e.target===e.currentTarget){e.currentTarget.classList.remove('open');if(id==='adminModal'){renderSelectedWorks();renderAllWorks()}}})});
+
+function showToast(title,msg){document.getElementById('toastTitle').textContent=title;document.getElementById('toastMsg').textContent=msg;document.getElementById('toast').classList.add('show');setTimeout(()=>document.getElementById('toast').classList.remove('show'),4000)}
+</script>
+</body>
+</html>

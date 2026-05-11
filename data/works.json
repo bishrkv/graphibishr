@@ -1,0 +1,98 @@
+[
+  {
+    "id": 1,
+    "title": "hiii",
+    "category": "branding",
+    "desc": "Complete brand overhaul for a luxury wellness retreat including logo, packaging, and digital presence.",
+    "image": "https://picsum.photos/seed/brand-luxury/800/600.jpg",
+    "featured": true
+  },
+  {
+    "id": 2,
+    "title": "FinFlow Dashboard",
+    "category": "uiux",
+    "desc": "Financial analytics dashboard with intuitive data visualization and streamlined user workflows.",
+    "image": "https://picsum.photos/seed/fintech-app/800/500.jpg",
+    "featured": true
+  },
+  {
+    "id": 3,
+    "title": "Artisan Coffee Co.",
+    "category": "package",
+    "desc": "Premium packaging design for a specialty coffee brand, from bag design to retail displays.",
+    "image": "https://picsum.photos/seed/coffee-pack/800/900.jpg",
+    "featured": true
+  },
+  {
+    "id": 4,
+    "title": "NexGen Tech",
+    "category": "branding",
+    "desc": "Future-forward brand identity for an AI startup, blending technology with human warmth.",
+    "image": "https://picsum.photos/seed/tech-startup/800/700.jpg",
+    "featured": true
+  },
+  {
+    "id": 5,
+    "title": "VitaTrack Health",
+    "category": "uiux",
+    "desc": "Mobile health tracking app with gamification elements and beautiful data visualization.",
+    "image": "https://picsum.photos/seed/health-app-ui/800/550.jpg",
+    "featured": true
+  },
+  {
+    "id": 6,
+    "title": "Onyx Magazine",
+    "category": "poster",
+    "desc": "Art direction and editorial design for a quarterly culture and design publication.",
+    "image": "https://picsum.photos/seed/magazine-design/800/1100.jpg",
+    "featured": true
+  },
+  {
+    "id": 7,
+    "title": "Solaris Energy",
+    "category": "branding",
+    "desc": "Sustainable energy brand with a visual system inspired by nature and innovation.",
+    "image": "https://picsum.photos/seed/solar-energy/800/800.jpg",
+    "featured": false
+  },
+  {
+    "id": 8,
+    "title": "TravelMate App",
+    "category": "uiux",
+    "desc": "Travel planning app with personalized itineraries and social sharing features.",
+    "image": "https://picsum.photos/seed/travel-app/800/600.jpg",
+    "featured": false
+  },
+  {
+    "id": 9,
+    "title": "Brew & Bite",
+    "category": "package",
+    "desc": "Menu and branding collateral for an artisan caf� chain with hand-drawn illustrations.",
+    "image": "https://picsum.photos/seed/cafe-brand/800/1000.jpg",
+    "featured": false
+  },
+  {
+    "id": 10,
+    "title": "Motion Reel 2024",
+    "category": "poster",
+    "desc": "Annual motion design showreel featuring brand animations and UI transitions.",
+    "image": "https://picsum.photos/seed/motion-reel/800/450.jpg",
+    "featured": false
+  },
+  {
+    "id": 11,
+    "title": "Echo Music Brand",
+    "category": "branding",
+    "desc": "Visual identity for a music streaming platform targeting Gen Z audiences.",
+    "image": "https://picsum.photos/seed/music-brand/800/650.jpg",
+    "featured": false
+  },
+  {
+    "id": 12,
+    "title": "Nova Fitness",
+    "category": "uiux",
+    "desc": "Workout tracking app with AI-powered form correction and progress analytics.",
+    "image": "https://picsum.photos/seed/fitness-app/800/750.jpg",
+    "featured": false
+  }
+]
