@@ -183,15 +183,24 @@ body{font-family:'Inter',sans-serif;background:#fff;color:#1e3a8a;overflow-x:hid
 @media(max-width:1024px){.works-masonry{columns:2}}
 @media(max-width:640px){.works-masonry{columns:1}}
 .works-masonry .project-card{break-inside:avoid;margin-bottom:20px;display:block}
+.loading-screen{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(239,246,255,0.98),rgba(255,255,255,0.98));backdrop-filter:blur(18px);transition:opacity .5s ease,visibility .5s ease}
+.loading-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.loading-inner{display:flex;flex-direction:column;align-items:center;gap:20px}
+.loading-brand{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-0.03em;color:#1d4ed8;animation:loadingFade 1.4s ease-in-out infinite alternate}
+.loading-dots{display:flex;align-items:center;gap:10px;height:16px}
+.loading-dots span{width:10px;height:10px;border-radius:999px;background:#2563eb;display:block;animation:loadingBounce 1s ease-in-out infinite}
+.loading-dots span:nth-child(2){animation-delay:.15s;background:#3b82f6}
+.loading-dots span:nth-child(3){animation-delay:.3s;background:#60a5fa}
+@keyframes loadingBounce{0%,80%,100%{transform:translateY(0);opacity:.45}40%{transform:translateY(-10px);opacity:1}}
+@keyframes loadingFade{0%{opacity:.5;transform:translateY(0)}100%{opacity:1;transform:translateY(-2px)}}
 </style>
 </head>
 <body class="grid-bg">
 
-<!-- Loading Screen -->
-<div class="loading-screen" id="loadingScreen">
-  <div class="text-center">
-    <p class="font-display text-2xl font-bold text-blue-600 mb-6">Graphic.Bishr</p>
-    <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+<div class="loading-screen" id="loadingScreen" aria-live="polite" aria-busy="true">
+  <div class="loading-inner">
+    <div class="loading-brand">Graphic.Bishr</div>
+    <div class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></div>
   </div>
 </div>
 
@@ -757,6 +766,112 @@ function renderAllWorks(filter='all'){
   document.getElementById('allWorksGrid').innerHTML=filtered.length?filtered.map(createProjectCard).join(''):'<div style="column-span:all" class="text-center py-20 text-slate-400"><p class="text-lg">No works in this category.</p></div>';
 }
 
+function setToggleState(toggleEl, enabled){
+  if(!toggleEl) return;
+  toggleEl.classList.toggle('on', Boolean(enabled));
+}
+
+function toggleState(toggleEl){
+  if(!toggleEl) return false;
+  toggleEl.classList.toggle('on');
+  return toggleEl.classList.contains('on');
+}
+
+function openEditModal(work){
+  const editModal=document.getElementById('editModal');
+  if(!editModal || !work) return;
+  document.getElementById('editId').value=work.id;
+  document.getElementById('editTitle').value=work.title;
+  document.getElementById('editCategory').value=work.category;
+  document.getElementById('editDesc').value=work.desc;
+  document.getElementById('editImage').value=work.image;
+  setToggleState(document.getElementById('editFeatured'), work.featured);
+  updateImagePreview('editImagePreview', work.image);
+  editModal.classList.add('open');
+}
+
+function renderAdminList(){
+  const container=document.getElementById('adminWorksList');
+  if(!container) return;
+  const works=getWorks();
+  document.getElementById('adminTotalWorks').textContent=works.length;
+  document.getElementById('adminFeaturedWorks').textContent=works.filter(work=>work.featured).length;
+  document.getElementById('adminOtherWorks').textContent=works.filter(work=>!work.featured).length;
+
+  container.innerHTML=works.length?works.map(work=>`
+    <div class="admin-work-item bg-white border border-blue-100 rounded-2xl p-4 flex flex-col md:flex-row md:items-center gap-4" data-id="${work.id}">
+      <img src="${work.image}" alt="${work.title}" class="w-full md:w-24 h-24 object-cover rounded-xl border border-blue-100" onerror="this.src='https://picsum.photos/seed/admin${work.id}/300/300.jpg'">
+      <div class="flex-1 min-w-0">
+        <div class="flex flex-wrap items-center gap-2 mb-1">
+          <h5 class="font-semibold text-blue-950 truncate">${work.title}</h5>
+          <span class="text-[10px] uppercase tracking-wider px-2 py-1 rounded-full bg-blue-50 text-blue-600">${categoryLabels[work.category]||work.category}</span>
+          ${work.featured?'<span class="text-[10px] uppercase tracking-wider px-2 py-1 rounded-full bg-blue-600 text-white">Featured</span>':''}
+        </div>
+        <p class="text-sm text-slate-500 line-clamp-2">${work.desc}</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button class="admin-edit-btn admin-btn admin-btn-ghost" data-edit-id="${work.id}">Edit</button>
+        <button class="admin-delete-btn admin-btn admin-btn-danger" data-delete-id="${work.id}">Delete</button>
+      </div>
+    </div>
+  `).join(''):'<div class="text-center py-10 text-slate-400">No works found.</div>';
+
+  container.querySelectorAll('.admin-edit-btn').forEach(button=>{
+    button.addEventListener('click',()=>{
+      const work=works.find(item=>item.id===Number(button.dataset.editId));
+      if(work) openEditModal(work);
+    });
+  });
+
+  container.querySelectorAll('.admin-delete-btn').forEach(button=>{
+    button.addEventListener('click',async()=>{
+      const id=Number(button.dataset.deleteId);
+      const nextWorks=works.filter(item=>item.id!==id);
+      try{
+        await saveWorks(nextWorks);
+        renderAdminList();
+        renderSelectedWorks();
+        renderAllWorks();
+        showToast('Deleted','Work removed from the portfolio.');
+      }catch(error){
+        showToast('Delete failed','Could not remove this work.');
+      }
+    });
+  });
+}
+
+async function addNewWork(){
+  const title=document.getElementById('newTitle').value.trim();
+  const category=document.getElementById('newCategory').value;
+  const desc=document.getElementById('newDesc').value.trim();
+  const image=document.getElementById('newImage').value.trim();
+  const featured=document.getElementById('newFeatured').classList.contains('on');
+
+  if(!title || !image){
+    showToast('Missing info','Please add a title and image.');
+    return;
+  }
+
+  const works=getWorks();
+  const nextWorks=[...works,{id:getNextId(),title,category,desc:desc||'No description provided.',image,featured}];
+
+  try{
+    await saveWorks(nextWorks);
+    document.getElementById('newTitle').value='';
+    document.getElementById('newDesc').value='';
+    document.getElementById('newImage').value='';
+    document.getElementById('newImageFile').value='';
+    setToggleState(document.getElementById('newFeatured'), true);
+    updateImagePreview('newImagePreview', '');
+    renderAdminList();
+    renderSelectedWorks();
+    renderAllWorks();
+    showToast('Saved','New work added to the portfolio.');
+  }catch(error){
+    showToast('Save failed','Could not add the new work.');
+  }
+}
+
 // ===================== INIT =====================
 async function initApp(){
   await ensureWorksLoaded();
@@ -768,7 +883,18 @@ initApp();
 bindImagePicker('newImageFile','newImage','newImagePreview');
 bindImagePicker('editImageFile','editImage','editImagePreview');
 
-window.addEventListener('load',()=>{setTimeout(()=>{document.getElementById('loadingScreen').classList.add('hidden')},1800)});
+window.addEventListener('load',()=>{
+  const loadingScreen=document.getElementById('loadingScreen');
+  if(loadingScreen) setTimeout(()=>loadingScreen.classList.add('hidden'),2000);
+});
+
+setToggleState(document.getElementById('newFeatured'), true);
+document.getElementById('newFeatured').addEventListener('click',()=>toggleState(document.getElementById('newFeatured')));
+document.getElementById('editFeatured').addEventListener('click',()=>toggleState(document.getElementById('editFeatured')));
+document.getElementById('addWorkBtn').addEventListener('click',addNewWork);
+document.getElementById('editCancelBtn').addEventListener('click',()=>document.getElementById('editModal').classList.remove('open'));
+document.getElementById('newImage').addEventListener('input',()=>updateImagePreview('newImagePreview', document.getElementById('newImage').value.trim()));
+document.getElementById('editImage').addEventListener('input',()=>updateImagePreview('editImagePreview', document.getElementById('editImage').value.trim()));
 
 // Cursor
 const blob=document.getElementById('cursorBlob');
@@ -796,21 +922,16 @@ window.addEventListener('scroll',updateNav);
 const bn=document.getElementById('bottomNav');
 window.addEventListener('scroll',()=>bn.classList.toggle('scrolled',scrollY>100));
 
-// Filter - Selected
-document.getElementById('filterBtns').addEventListener('click',e=>{
-  const btn=e.target.closest('.filter-btn');if(!btn)return;
-  document.querySelectorAll('#filterBtns .filter-btn').forEach(b=>{b.classList.remove('bg-blue-600','text-white');b.classList.add('bg-blue-50','text-blue-600')});
-  btn.classList.remove('bg-blue-50','text-blue-600');btn.classList.add('bg-blue-600','text-white');
-  renderSelectedWorks(btn.dataset.filter);
-});
-
 // Filter - All Works
-document.getElementById('allWorksFilterBtns').addEventListener('click',e=>{
-  const btn=e.target.closest('.all-filter-btn');if(!btn)return;
-  document.querySelectorAll('.all-filter-btn').forEach(b=>{b.classList.remove('bg-blue-600','text-white');b.classList.add('bg-blue-50','text-blue-600')});
-  btn.classList.remove('bg-blue-50','text-blue-600');btn.classList.add('bg-blue-600','text-white');
-  renderAllWorks(btn.dataset.filter);
-});
+const allWorksFilterBtns=document.getElementById('allWorksFilterBtns');
+if(allWorksFilterBtns){
+  allWorksFilterBtns.addEventListener('click',e=>{
+    const btn=e.target.closest('.all-filter-btn');if(!btn)return;
+    document.querySelectorAll('.all-filter-btn').forEach(b=>{b.classList.remove('bg-blue-600','text-white');b.classList.add('bg-blue-50','text-blue-600')});
+    btn.classList.remove('bg-blue-50','text-blue-600');btn.classList.add('bg-blue-600','text-white');
+    renderAllWorks(btn.dataset.filter);
+  });
+}
 
 // Contact Form
 document.getElementById('contactForm').addEventListener('submit',async e=>{
@@ -862,12 +983,26 @@ function openLogin(){
     if(pwd) pwd.value = '';
     const err = document.getElementById('loginError');
     if(err) err.classList.add('hidden');
-    setTimeout(() => {
-      if(pwd) pwd.focus();
-    }, 300);
+    setTimeout(() => { if(pwd) pwd.focus(); }, 300);
   }
 }
-function\ attemptLogin\(\)\{\n\ \ const\ pwd\ =\ document\.getElementById\('loginPassword'\);\n\ \ const\ val\ =\ pwd\ \?\ String\(pwd\.value\ \|\|\ ''\)\.trim\(\)\.toLowerCase\(\)\ :\ '';\n\ \ if\(val\ ===\ 'bishr'\)\{\n\ \ \ \ const\ modal\ =\ document\.getElementById\('loginModal'\);\n\ \ \ \ if\(modal\)\ modal\.classList\.remove\('open'\);\n\ \ \ \ openAdmin\(\);\n\ \ }\ else\ \{\n\ \ \ \ const\ err\ =\ document\.getElementById\('loginError'\);\n\ \ \ \ if\(err\)\ err\.classList\.remove\('hidden'\);\n\ \ \ \ if\(pwd\)\ \{\n\ \ \ \ \ \ pwd\.classList\.add\('shake'\);\n\ \ \ \ \ \ setTimeout\(\(\)\ =>\ pwd\.classList\.remove\('shake'\),\ 400\);\n\ \ \ \ }\n\ \ }\n}
+
+function attemptLogin() {
+  const pwd = document.getElementById('loginPassword');
+  const val = pwd ? String(pwd.value || '').trim().toLowerCase() : '';
+  if (val === 'bishr') {
+    const modal = document.getElementById('loginModal');
+    if (modal) modal.classList.remove('open');
+    openAdmin();
+  } else {
+    const err = document.getElementById('loginError');
+    if (err) err.classList.remove('hidden');
+    if (pwd) {
+      pwd.classList.add('shake');
+      setTimeout(() => pwd.classList.remove('shake'), 400);
+    }
+  }
+}
 
 // Attach event listeners safely
 setTimeout(() => {
@@ -890,42 +1025,28 @@ setTimeout(() => {
 }, 100);
 
 // ===================== ADMIN =====================
-async\ function\ openAdmin\(\)\{\n\ \ //\ Open\ the\ admin\ modal\ immediately\ so\ the\ UI\ appears\ even\ if\ the\ server\ fetch\ fails\n\ \ const\ adminModal\ =\ document\.getElementById\('adminModal'\);\n\ \ if\(adminModal\)\ adminModal\.classList\.add\('open'\);\n\ \ try\{\n\ \ \ \ await\ ensureWorksLoaded\(\);\n\ \ }catch\(err\)\{\n\ \ \ \ console\.error\('Failed\ to\ load\ works\ before\ opening\ admin:',\ err\);\n\ \ }\n\ \ renderAdminList\(\);\n\ \ lucide\.createIcons\(\);\n}
-document.getElementById('adminCloseBtn').addEventListener('click',()=>{document.getElementById('adminModal').classList.remove('open');renderSelectedWorks();renderAllWorks()});
-
-function renderAdminList(){
-  const works=getWorks();const featured=works.filter(w=>w.featured).length;
-  document.getElementById('adminTotalWorks').textContent=works.length;
-  document.getElementById('adminFeaturedWorks').textContent=featured;
-  document.getElementById('adminOtherWorks').textContent=works.length-featured;
-  document.getElementById('adminWorksList').innerHTML=works.map(w=>`
-    <div class="admin-work-item flex items-center gap-4 p-4 rounded-2xl border border-blue-50" data-id="${w.id}">
-      <img src="${w.image}" class="w-16 h-16 rounded-xl object-cover flex-shrink-0" onerror="this.src='https://picsum.photos/seed/fb${w.id}/160/160.jpg'">
-      <div class="flex-1 min-w-0"><div class="flex items-center gap-2"><h5 class="font-semibold text-blue-950 text-sm truncate">${w.title}</h5>${w.featured?'<span class="px-2 py-0.5 bg-blue-600 text-white text-[10px] font-bold rounded-full uppercase flex-shrink-0">Featured</span>':'<span class="px-2 py-0.5 bg-slate-200 text-slate-500 text-[10px] font-bold rounded-full uppercase flex-shrink-0">Other</span>'}</div><p class="text-xs text-slate-400 mt-0.5">${categoryLabels[w.category]||w.category}</p></div>
-      <div class="flex items-center gap-2 flex-shrink-0">
-        <div class="toggle-switch ${w.featured?'on':''}" onclick="toggleFeatured(${w.id})" title="${w.featured?'Remove from Selected':'Add to Selected'}"></div>
-        <button onclick="openEdit(${w.id})" class="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center hover:bg-blue-100 transition-colors"><i data-lucide="edit-3" class="w-4 h-4 text-blue-600"></i></button>
-        <button onclick="deleteWork(${w.id})" class="w-9 h-9 bg-red-50 rounded-lg flex items-center justify-center hover:bg-red-100 transition-colors"><i data-lucide="trash-2" class="w-4 h-4 text-red-500"></i></button>
-      </div>
-    </div>`).join('');
+async function openAdmin() {
+  // Open the admin modal immediately so the UI appears even if the server fetch fails
+  const adminModal = document.getElementById('adminModal');
+  if (adminModal) adminModal.classList.add('open');
+  try {
+    await ensureWorksLoaded();
+  } catch (err) {
+    console.error('Failed to load works before opening admin:', err);
+  }
+  renderAdminList();
   lucide.createIcons();
 }
 
-window.toggleFeatured=async function(id){const works=getWorks();const w=works.find(x=>x.id===id);if(w){w.featured=!w.featured;try{await saveWorks(works);renderAdminList();renderSelectedWorks();renderAllWorks()}catch(error){showToast('Save failed','Could not update featured state.')}}};
-window.deleteWork=async function(id){let works=getWorks();works=works.filter(x=>x.id!==id);try{await saveWorks(works);renderAdminList();renderSelectedWorks();renderAllWorks();showToast('Deleted','Work has been permanently removed.')}catch(error){showToast('Delete failed','Could not remove the work right now.')}};
-
-document.getElementById('newFeatured').addEventListener('click',function(){this.classList.toggle('on')});
-document.getElementById('addWorkBtn').addEventListener('click',async()=>{
-  const title=document.getElementById('newTitle').value.trim();const category=document.getElementById('newCategory').value;const desc=document.getElementById('newDesc').value.trim();const image=document.getElementById('newImage').value.trim();const featured=document.getElementById('newFeatured').classList.contains('on');
-  if(!title){showToast('Error','Please enter a title.');return}
-  const works=getWorks();
-  works.push({id:getNextId(),title,category,desc:desc||'No description provided.',image:image||`https://picsum.photos/seed/${title.replace(/\s/g,'-').toLowerCase()}/800/600.jpg`,featured});
-  try{await saveWorks(works);renderAdminList();renderSelectedWorks();renderAllWorks();document.getElementById('newTitle').value='';document.getElementById('newDesc').value='';document.getElementById('newImage').value='';document.getElementById('newImageFile').value='';updateImagePreview('newImagePreview','');document.getElementById('newFeatured').classList.remove('on');showToast('Added!','New work permanently saved.')}catch(error){showToast('Save failed','Could not store the new work.')}
-});
-
-window.openEdit=function(id){const works=getWorks();const w=works.find(x=>x.id===id);if(!w)return;document.getElementById('editId').value=id;document.getElementById('editTitle').value=w.title;document.getElementById('editCategory').value=w.category;document.getElementById('editDesc').value=w.desc;document.getElementById('editImage').value=w.image;document.getElementById('editImageFile').value='';updateImagePreview('editImagePreview',w.image);const ft=document.getElementById('editFeatured');w.featured?ft.classList.add('on'):ft.classList.remove('on');document.getElementById('editModal').classList.add('open');lucide.createIcons()};
-document.getElementById('editFeatured').addEventListener('click',function(){this.classList.toggle('on')});
-document.getElementById('editCancelBtn').addEventListener('click',()=>document.getElementById('editModal').classList.remove('open'));
+const adminCloseBtn = document.getElementById('adminCloseBtn');
+if (adminCloseBtn) {
+  adminCloseBtn.addEventListener('click', () => {
+    const adminModal = document.getElementById('adminModal');
+    if (adminModal) adminModal.classList.remove('open');
+    renderSelectedWorks();
+    renderAllWorks();
+  });
+}
 document.getElementById('editSaveBtn').addEventListener('click',async()=>{
   const id=parseInt(document.getElementById('editId').value);const works=getWorks();const w=works.find(x=>x.id===id);if(!w)return;
   w.title=document.getElementById('editTitle').value.trim()||w.title;w.category=document.getElementById('editCategory').value;w.desc=document.getElementById('editDesc').value.trim()||w.desc;w.image=document.getElementById('editImage').value.trim()||w.image;w.featured=document.getElementById('editFeatured').classList.contains('on');
